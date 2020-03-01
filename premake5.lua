@@ -14,19 +14,18 @@ workspace "WS_nxpixel"
         --entrypoint "WinMainCRTStartup"
 
 project "nxpixel"
-    location "build/nxpixel/"
-    --kind "ConsoleApp"
+    kind "ConsoleApp"
     --kind "WindowedApp"
-    kind "SharedLib"
+    --kind "SharedLib"
     language "C"
-    --targetdir "bin/%{cfg.buildcfg}"
-    targetdir "lib/nxpixel"
+    targetdir "bin/%{cfg.buildcfg}"
+    --targetdir "lib/nxpixel"
     --links { "allegro", "allegro_ttf", "allegro_font", "allegro_color", "allegro_primitives" }
     links { "GL", "glfw", "m"}
     --links { "glfw" }
 
     --files { "./src/**.h", "./src/**.c" }
-    files { "./src/engine/**.h", "./src/engine/**.c" }
+    files { "./src/**.h", "./src/**.c" }
 
     filter "configurations:Debug"
         defines { "DEBUG" }

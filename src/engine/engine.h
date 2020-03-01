@@ -10,8 +10,6 @@
 #include "texture.h"
 //#include "event.h"
 
-#include "image.h"
-
 //#include "callback.h"
 
 void _engine_on_update(double dt) {
@@ -34,13 +32,10 @@ void _engine_on_draw(Texture *screen) {
 
   for (int x = 0; x < screen->width; x++) {
     for (int y = 0; y < screen->height; y++) {
-      for (int z = 0; z < 4; z++) {
-
-        cake.r = (x % 256);
-        cake.g = (y % 256);
-        cake.b = (x + y - count) % 256;
-        texture_set_pixel(screen, x, y, cake);
-      }
+      cake.r = x;
+      cake.g = y;
+      cake.b = 0;
+      texture_set_pixel(screen, x, y, cake);
     }
   }
 }
@@ -82,39 +77,6 @@ Engine *newEngine(int winW, int winH, int texW, int texH) {
   return self;
 }
 
-/*
-void engine_testdraw(Engine *self)
-{
-    static int count = 0;
-    static Colour cake;
-
-    count += 1;
-
-    for (int x = 0; x < self->texWidth; x++)
-    {
-        for (int y = 0; y < self->texHeight; y++)
-        {
-            for (int z = 0; z < 4; z++)
-            {
-
-                cake.r = (x % 256);
-                cake.g = (y % 256);
-                cake.b = (x + y - count) % 256;
-                texture_set_pixel(self->tex, x, y, cake);
-            }
-        }
-    }
-
-    draw_line(self->tex, 3, 1, 1, 3, COLOUR_WHITE);
-    draw_line(self->tex, 64, 64, 128, 100, COLOUR_WHITE);
-    draw_circle(self->tex, 32, 32, 8, 0377, COLOUR_WHITE);
-    draw_rectangle(self->tex, 16, 16, 8, 8, COLOUR_WHITE);
-    draw_triangle(self->tex, 10,10, 20,20, 10, 20, COLOUR_WHITE);
-
-    //texture_stamp(self->stamp, self->tex, 3,3,1);
-    //texture_stamp(self->tex, self->stamp, (count)%(self->texWidth), 48,1);
-}
-*/
 
 int engine_init(Engine *self, int resizable) {
 
@@ -166,7 +128,7 @@ int engine_init(Engine *self, int resizable) {
   // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self->texWidth, self->screenHeight,
   // 0, GL_RGBA, GL_UNSIGNED_BYTE, self->tex);
 
-  glfwSwapInterval(1);
+  //glfwSwapInterval(1);
   return 0;
 }
 
@@ -176,7 +138,7 @@ void engine_draw(Engine *self) {
   // engine_testdraw(self);
   self->on_draw(self->tex);
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self->texWidth, self->texHeight, 0,
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->texWidth, self->texHeight, 0,
                GL_RGBA, GL_UNSIGNED_BYTE, self->tex->data);
 
   // glColor3d(0.5f, 0.25f, 0.0f);

@@ -5,7 +5,7 @@ int main(int argc, const char *argv[]) {
 
   // printf("Aloha, edit \"src/main.c\" to get started\n");
   // Engine *engine = newEngine(800, 600, 400, 300);
-  Engine *engine = newEngine(320 * 4, 200 * 4, 320, 200);
+  Engine *engine = newEngine(256 * 6, 143 * 6, 256, 143);
 
   // int cake[10];
 
