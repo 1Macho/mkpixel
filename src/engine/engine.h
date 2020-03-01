@@ -139,7 +139,7 @@ void engine_draw(Engine *self) {
   self->on_draw(self->tex);
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->texWidth, self->texHeight, 0,
-               GL_RGBA, GL_UNSIGNED_BYTE, self->tex->data);
+               GL_RGB, GL_UNSIGNED_BYTE, self->tex->data);
 
   // glColor3d(0.5f, 0.25f, 0.0f);
 
