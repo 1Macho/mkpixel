@@ -5,40 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "palette.h"
 #include "colour.h"
-#include "draw.h"
 #include "texture.h"
-//#include "event.h"
-
-//#include "callback.h"
-
-void _engine_on_update(double dt) {
-  static double counter = 0.0;
-  static int fps;
-  fps = (int)(1.0 / dt);
-  counter = counter + dt;
-
-  if (counter >= 0.5) {
-    printf("%i\n", fps);
-    counter = 0;
-  }
-}
-
-void _engine_on_draw(Texture *screen) {
-  static int count = 0;
-  static Colour cake;
-
-  count += 1;
-
-  for (int x = 0; x < screen->width; x++) {
-    for (int y = 0; y < screen->height; y++) {
-      cake.r = x;
-      cake.g = y;
-      cake.b = 0;
-      texture_set_pixel(screen, x, y, cake);
-    }
-  }
-}
 
 typedef struct {
   GLFWwindow *window;
@@ -48,12 +17,15 @@ typedef struct {
   unsigned int texID;
   unsigned int texWidth;
   unsigned int texHeight;
-  // unsigned char(*tex);
+  unsigned int upscale;
+  double nowTime;
+  double lastTime;
+  double dt;
   Texture *tex;
-  // Texture *stamp;
-  // int (*on_event)(Event event);
+  Palette *palette;
+
   void (*on_update)(double dt);
-  void (*on_draw)(Texture *screen);
+  void (*on_draw)();
   void (*callback_window_size)(GLFWwindow *window, int width, int height);
   void (*callback_key)(GLFWwindow *window, int key, int scancode, int action,
                        int mods);
@@ -62,37 +34,30 @@ typedef struct {
                                    double ypos);
 } Engine;
 
-Engine *newEngine(int winW, int winH, int texW, int texH) {
+Engine *newEngine(unsigned int tW, unsigned int tH, unsigned int upscale, char *title) {
   // Engine *self = malloc(sizeof(*self));
   Engine *self = (Engine *)calloc(1, sizeof(*self));
-  self->screenWidth = winW;
-  self->screenHeight = winH;
-  self->texWidth = texW;
-  self->texHeight = texH;
-
+  self->upscale = upscale;
+  self->screenWidth = tW * upscale;
+  self->screenHeight = tH * upscale;
+  self->texWidth = tW;
+  self->texHeight = tH;
+  self->palette = defaultPalette();
   self->tex = newTexture(self->texWidth, self->texHeight);
 
-  self->title = "testing";
+  self->title = title;
   // engine_init(self);
   return self;
 }
 
 
-int engine_init(Engine *self, int resizable) {
+int engine_init(Engine *self) {
 
   if (!glfwInit())
     return -1;
 
-  if (resizable) {
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-  } else {
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-  }
+  glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
-  // glfwWindowHint(GLFW_DOUBLEBUFFER, GL_FALSE );
-  // glfwWindowHint(GLFW_REFRESH_RATE, 60);
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
-  // glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
 
   self->window = glfwCreateWindow(self->screenWidth, self->screenHeight,
                                   self->title, NULL, NULL);
@@ -106,42 +71,32 @@ int engine_init(Engine *self, int resizable) {
   glfwSetCharCallback(self->window, self->callback_text_input);
   glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
 
-  self->on_update = _engine_on_update;
-  self->on_draw = _engine_on_draw;
-
-  // Texture* cake = image_load_png("kprey.png");
-  // if (cake != NULL){
-  //    self->stamp = cake;
-  //}else{
-  //    self->stamp = newTexture(16,16);
-  //    draw_triangle(self->stamp, 1,1,14,14,1,14, COLOUR_GREEN);
-  //}
-
   glfwMakeContextCurrent(self->window);
 
   glEnable(GL_TEXTURE_2D);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-  // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
   glGenTextures(1, &self->texID);
-  // glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self->texWidth, self->screenHeight,
-  // 0, GL_RGBA, GL_UNSIGNED_BYTE, self->tex);
 
-  //glfwSwapInterval(1);
   return 0;
+}
+
+void engine_set_pixel(Engine *self, int x, int y, unsigned char color_id) {
+  if (x < self->tex->width && y < self->tex->height) {
+    self->tex->data[self->tex->width * y + x] = self->palette->data[color_id];
+  }
 }
 
 void engine_draw(Engine *self) {
   glClear(GL_COLOR_BUFFER_BIT);
 
-  // engine_testdraw(self);
-  self->on_draw(self->tex);
+  if(self->on_draw != NULL) {
+    self->on_draw(self->tex);
+  }
 
   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->texWidth, self->texHeight, 0,
                GL_RGB, GL_UNSIGNED_BYTE, self->tex->data);
-
-  // glColor3d(0.5f, 0.25f, 0.0f);
 
   glBegin(GL_TRIANGLES);
   glTexCoord2f(0.0, 1.0); // 01
@@ -159,35 +114,19 @@ void engine_draw(Engine *self) {
   glEnd();
 
   glfwSwapBuffers(self->window);
-  // glFlush();
 }
 
 void engine_tick(Engine *self) {
-  static double lastTime = 0;
-  static double dt = 0;
-  static double nowTime = 0;
-  // static int fps = 0;
 
-  // static double counter = 0.0;
+  self->nowTime = glfwGetTime();
+  self->dt = (self->nowTime - self->lastTime);
+  self->lastTime = self->nowTime;
 
-  // counter = counter + dt;
+  printf("%f\n", 1/self->dt);
 
-  nowTime = glfwGetTime();
-  dt = (nowTime - lastTime);
-  lastTime = nowTime;
-
-  /*
-  fps = (int)(1.0 / dt);
-
-  //printf("%f\n", dt);
-  if (counter >= 0.5)
-  {
-      printf("%i\n", fps);
-      counter = 0;
+  if (self->on_update != NULL) {
+    self->on_update(self->dt);
   }
-  */
-
-  self->on_update(dt);
   engine_draw(self);
 
   glfwPollEvents();

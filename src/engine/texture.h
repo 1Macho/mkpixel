@@ -30,7 +30,7 @@ Colour texture_get_pixel(Texture *self, int x, int y) {
   if (x < self->width && y < self->height) {
     return self->data[self->width * y + x];
   }
-  return (Colour){0x00000000};
+  return makeColour(0,0,0);
 }
 
 

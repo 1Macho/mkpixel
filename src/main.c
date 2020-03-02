@@ -1,21 +1,24 @@
 #include "engine/engine.h"
 #include <stdio.h>
 
+Engine *engine;
+
+void draw_test () {
+  for (unsigned int x = 0; x < 256; x++) {
+    for (unsigned int y = 0; y < 144; y++) {
+      engine_set_pixel(engine, x, y, x+y);
+    }
+  }
+}
+
 int main(int argc, const char *argv[]) {
 
-  // printf("Aloha, edit \"src/main.c\" to get started\n");
-  // Engine *engine = newEngine(800, 600, 400, 300);
-  Engine *engine = newEngine(256 * 6, 143 * 6, 256, 143);
-
-  // int cake[10];
-
-  // cake[2,2] = 8;
-
-  engine_init(engine, 0);
+  engine = newEngine(256, 144, 6, "mkpixel");
+  engine->on_draw = draw_test;
+  engine_init(engine);
   engine_run(engine);
 
   return 0;
 }
 
-// For legacy Microsoft Operating System support
 int WinMain(int argc, const char *argv[]) { return main(argc, argv); }
