@@ -9,7 +9,8 @@ typedef struct {
   uint8_t b;
 } Colour;
 
-Colour makeColour(unsigned char r, unsigned char g, unsigned char b) {
+Colour makeColour(unsigned char r, unsigned char g, 
+  unsigned char b) {
   Colour self;
 
   self.r = r;

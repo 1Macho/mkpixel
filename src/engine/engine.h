@@ -27,14 +27,16 @@ typedef struct {
   void (*on_update)(double dt);
   void (*on_draw)();
   void (*callback_window_size)(GLFWwindow *window, int width, int height);
-  void (*callback_key)(GLFWwindow *window, int key, int scancode, int action,
-                       int mods);
-  void (*callback_fbt_input)(GLFWwindow *window, unsigned int codepoint);
-  void (*callback_cursor_position)(GLFWwindow *window, double xpos,
-                                   double ypos);
+  void (*callback_key)(GLFWwindow *window, int key, 
+    int scancode, int action, int mods);
+  void (*callback_fbt_input)(GLFWwindow *window,
+    unsigned int codepoint);
+  void (*callback_cursor_position)(GLFWwindow *window, 
+    double xpos, double ypos);
 } Engine;
 
-Engine *newEngine(unsigned int tW, unsigned int tH, unsigned int upscale, char *title) {
+Engine *newEngine(unsigned int tW, unsigned int tH, 
+  unsigned int upscale, char *title) {
   // Engine *self = malloc(sizeof(*self));
   Engine *self = (Engine *)calloc(1, sizeof(*self));
   self->upscale = upscale;
@@ -59,32 +61,40 @@ int engine_init(Engine *self) {
   glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 
-  self->window = glfwCreateWindow(self->screenWidth, self->screenHeight,
-                                  self->title, NULL, NULL);
+  self->window = glfwCreateWindow(self->screenWidth, 
+    self->screenHeight, self->title, NULL, NULL);
   if (!self->window) {
     glfwTerminate();
     return -1;
   }
 
-  glfwSetWindowSizeCallback(self->window, self->callback_window_size);
-  glfwSetKeyCallback(self->window, self->callback_key);
-  glfwSetCharCallback(self->window, self->callback_fbt_input);
-  glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
+  glfwSetWindowSizeCallback(self->window, 
+    self->callback_window_size);
+  glfwSetKeyCallback(self->window, 
+    self->callback_key);
+  glfwSetCharCallback(self->window, 
+    self->callback_fbt_input);
+  glfwSetCursorPosCallback(self->window, 
+    self->callback_cursor_position);
 
   glfwMakeContextCurrent(self->window);
 
   glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+    GL_NEAREST);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+    GL_NEAREST);
 
   glGenTextures(1, &self->fbID);
 
   return 0;
 }
 
-void engine_set_pixel(Engine *self, int x, int y, unsigned char color_id) {
+void engine_set_pixel(Engine *self, int x, int y, 
+  unsigned char color_id) {
   if (x < self->fb->width && y < self->fb->height) {
-    self->fb->data[self->fb->width * y + x] = self->palette->data[color_id];
+    self->fb->data[self->fb->width * y + x] = 
+      self->palette->data[color_id];
   }
 }
 
@@ -95,8 +105,9 @@ void engine_draw(Engine *self) {
     self->on_draw(self->fb);
   }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->fbWidth, self->fbHeight, 0,
-               GL_RGB, GL_UNSIGNED_BYTE, self->fb->data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->fbWidth, 
+    self->fbHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 
+    self->fb->data);
 
   glBegin(GL_TRIANGLES);
   glTexCoord2f(0.0, 1.0); // 01

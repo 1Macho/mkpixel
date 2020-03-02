@@ -12,15 +12,18 @@ typedef struct {
 } Framebuffer;
 
 Framebuffer *newFramebuffer(int width, int height) {
-  Framebuffer *self = (Framebuffer *)calloc(1, sizeof(*self));
+  Framebuffer *self = (Framebuffer *)calloc(1, 
+    sizeof(*self));
   self->width = width;
   self->height = height;
-  self->data = (Colour *)calloc(self->width * self->height * 1, sizeof(Colour));
+  self->data = (Colour *)calloc(self->width * self->height 
+    * 1, sizeof(Colour));
   return self;
 }
 
 
-void framebuffer_set_pixel(Framebuffer *self, int x, int y, Colour colour) {
+void framebuffer_set_pixel(Framebuffer *self, int x, int y, 
+  Colour colour) {
   if (x < self->width && y < self->height) {
     self->data[self->width * y + x] = colour;
   }
