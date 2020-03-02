@@ -1,19 +1,13 @@
 require("mingw64")
 
-workspace "WS_nxpixel"
+workspace "WS_mkpixel"
     configurations { "Debug", "Release" }
-    platforms { "l64", "w64"}
+    platforms { "l64" }
     filter { "platforms:l64" }
         system "linux"
         architecture "x64"
 
-    filter { "platforms:w64" }
-        system "windows"
-        architecture "x64"
-        toolset ("mingw64")
-        --entrypoint "WinMainCRTStartup"
-
-project "nxpixel"
+project "mkpixel"
     kind "ConsoleApp"
     --kind "WindowedApp"
     --kind "SharedLib"

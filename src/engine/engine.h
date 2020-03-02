@@ -7,21 +7,21 @@
 
 #include "palette.h"
 #include "colour.h"
-#include "texture.h"
+#include "framebuffer.h"
 
 typedef struct {
   GLFWwindow *window;
   int screenWidth;
   int screenHeight;
   char *title;
-  unsigned int texID;
-  unsigned int texWidth;
-  unsigned int texHeight;
+  unsigned int fbID;
+  unsigned int fbWidth;
+  unsigned int fbHeight;
   unsigned int upscale;
   double nowTime;
   double lastTime;
   double dt;
-  Texture *tex;
+  Framebuffer *fb;
   Palette *palette;
 
   void (*on_update)(double dt);
@@ -29,7 +29,7 @@ typedef struct {
   void (*callback_window_size)(GLFWwindow *window, int width, int height);
   void (*callback_key)(GLFWwindow *window, int key, int scancode, int action,
                        int mods);
-  void (*callback_text_input)(GLFWwindow *window, unsigned int codepoint);
+  void (*callback_fbt_input)(GLFWwindow *window, unsigned int codepoint);
   void (*callback_cursor_position)(GLFWwindow *window, double xpos,
                                    double ypos);
 } Engine;
@@ -40,10 +40,10 @@ Engine *newEngine(unsigned int tW, unsigned int tH, unsigned int upscale, char *
   self->upscale = upscale;
   self->screenWidth = tW * upscale;
   self->screenHeight = tH * upscale;
-  self->texWidth = tW;
-  self->texHeight = tH;
+  self->fbWidth = tW;
+  self->fbHeight = tH;
   self->palette = defaultPalette();
-  self->tex = newTexture(self->texWidth, self->texHeight);
+  self->fb = newFramebuffer(self->fbWidth, self->fbHeight);
 
   self->title = title;
   // engine_init(self);
@@ -68,7 +68,7 @@ int engine_init(Engine *self) {
 
   glfwSetWindowSizeCallback(self->window, self->callback_window_size);
   glfwSetKeyCallback(self->window, self->callback_key);
-  glfwSetCharCallback(self->window, self->callback_text_input);
+  glfwSetCharCallback(self->window, self->callback_fbt_input);
   glfwSetCursorPosCallback(self->window, self->callback_cursor_position);
 
   glfwMakeContextCurrent(self->window);
@@ -77,14 +77,14 @@ int engine_init(Engine *self) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
-  glGenTextures(1, &self->texID);
+  glGenTextures(1, &self->fbID);
 
   return 0;
 }
 
 void engine_set_pixel(Engine *self, int x, int y, unsigned char color_id) {
-  if (x < self->tex->width && y < self->tex->height) {
-    self->tex->data[self->tex->width * y + x] = self->palette->data[color_id];
+  if (x < self->fb->width && y < self->fb->height) {
+    self->fb->data[self->fb->width * y + x] = self->palette->data[color_id];
   }
 }
 
@@ -92,11 +92,11 @@ void engine_draw(Engine *self) {
   glClear(GL_COLOR_BUFFER_BIT);
 
   if(self->on_draw != NULL) {
-    self->on_draw(self->tex);
+    self->on_draw(self->fb);
   }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->texWidth, self->texHeight, 0,
-               GL_RGB, GL_UNSIGNED_BYTE, self->tex->data);
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->fbWidth, self->fbHeight, 0,
+               GL_RGB, GL_UNSIGNED_BYTE, self->fb->data);
 
   glBegin(GL_TRIANGLES);
   glTexCoord2f(0.0, 1.0); // 01
