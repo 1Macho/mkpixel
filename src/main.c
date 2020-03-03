@@ -1,14 +1,16 @@
 #include "engine/engine.h"
+#include "engine/drawing.h"
 #include <stdio.h>
 
 Engine *engine;
 
 void draw_test () {
-  for (unsigned int x = 0; x < 256; x++) {
-    for (unsigned int y = 0; y < 144; y++) {
-      engine_set_pixel(engine, x, y, x+y);
-    }
-  }
+  draw_clear(engine, 0xAA);
+  //for (unsigned int x = 0; x < 256; x++) {
+  //  for (unsigned int y = 0; y < 144; y++) {
+  //    draw_set_pixel(engine, x, y, x+y);
+  //  }
+  //}
 }
 
 int main(int argc, const char *argv[]) {

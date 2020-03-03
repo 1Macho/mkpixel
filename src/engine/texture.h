@@ -41,4 +41,11 @@ Texture *mapTexture (char *path) {
     return self;
 }
 
+unsigned char texture_get_pixel(Texture *self, int x, int y) {
+  if (x < self->side && y < self->side) {
+    return self->data[self->width * y + x];
+  }
+  return 0;
+}
+
 #endif
