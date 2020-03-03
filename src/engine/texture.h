@@ -33,9 +33,12 @@ Texture *mapTexture (char *path) {
         return NULL;
     }
 
+    // Construct the texture
     Texture *self = (Texture *)calloc(1, sizeof(*self));
     self->data = file_data;
     self->side = sqrt(file_length);
+
+    return self;
 }
 
 #endif
