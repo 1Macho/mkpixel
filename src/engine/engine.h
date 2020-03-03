@@ -27,15 +27,15 @@ typedef struct {
   void (*on_update)(double dt);
   void (*on_draw)();
   void (*callback_window_size)(GLFWwindow *window, int width, int height);
-  void (*callback_key)(GLFWwindow *window, int key, 
+  void (*callback_key)(GLFWwindow *window, int key,
     int scancode, int action, int mods);
   void (*callback_fbt_input)(GLFWwindow *window,
     unsigned int codepoint);
-  void (*callback_cursor_position)(GLFWwindow *window, 
+  void (*callback_cursor_position)(GLFWwindow *window,
     double xpos, double ypos);
 } Engine;
 
-Engine *newEngine(unsigned int tW, unsigned int tH, 
+Engine *newEngine(unsigned int tW, unsigned int tH,
   unsigned int upscale, char *title) {
   // Engine *self = malloc(sizeof(*self));
   Engine *self = (Engine *)calloc(1, sizeof(*self));
@@ -61,28 +61,28 @@ int engine_init(Engine *self) {
   glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 
-  self->window = glfwCreateWindow(self->screenWidth, 
+  self->window = glfwCreateWindow(self->screenWidth,
     self->screenHeight, self->title, NULL, NULL);
   if (!self->window) {
     glfwTerminate();
     return -1;
   }
 
-  glfwSetWindowSizeCallback(self->window, 
+  glfwSetWindowSizeCallback(self->window,
     self->callback_window_size);
-  glfwSetKeyCallback(self->window, 
+  glfwSetKeyCallback(self->window,
     self->callback_key);
-  glfwSetCharCallback(self->window, 
+  glfwSetCharCallback(self->window,
     self->callback_fbt_input);
-  glfwSetCursorPosCallback(self->window, 
+  glfwSetCursorPosCallback(self->window,
     self->callback_cursor_position);
 
   glfwMakeContextCurrent(self->window);
 
   glEnable(GL_TEXTURE_2D);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
     GL_NEAREST);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, 
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
     GL_NEAREST);
 
   glGenTextures(1, &self->fbID);
@@ -97,8 +97,8 @@ void engine_draw(Engine *self) {
     self->on_draw(self->fb);
   }
 
-  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->fbWidth, 
-    self->fbHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, 
+  glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, self->fbWidth,
+    self->fbHeight, 0, GL_RGB, GL_UNSIGNED_BYTE,
     self->fb->data);
 
   glBegin(GL_TRIANGLES);
@@ -125,7 +125,7 @@ void engine_tick(Engine *self) {
   self->dt = (self->nowTime - self->lastTime);
   self->lastTime = self->nowTime;
 
-  printf("%f\n", 1/self->dt);
+  //printf("%f\n", 1/self->dt);
 
   if (self->on_update != NULL) {
     self->on_update(self->dt);

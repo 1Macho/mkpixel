@@ -12,12 +12,13 @@ typedef struct {
     unsigned char *data;
 } Texture;
 
-Texture *mapTexture (char *path) {
+Texture *loadTexture (char *path) {
     // Get file descriptor.
-    int fd;
-    if ((fd = open(path, O_RDONLY)) == -1) {
-        return NULL;
+    FILE *fd = fopen(path, "r");
+    if (fd == NULL) {
+      return NULL;
     }
+
 
     // Get file stat
     struct stat sbuf;
@@ -26,12 +27,14 @@ Texture *mapTexture (char *path) {
     }
     unsigned int file_length = sbuf.st_size;
 
-    // Map file to memory.
-    unsigned char *file_data;
-    if ((file_data = mmap((caddr_t)0, sbuf.st_size, 
-        PROT_READ, MAP_PRIVATE, fd, 0)) == (caddr_t)(-1)) {
-        return NULL;
+    // Load data from stream.
+    unsigned char *file_data = calloc(file_length,
+      sizeof(unsigned char));
+    for (unsigned int i = 0; i < file_length; i++) {
+      file_data[i] = fgetc(fd);
     }
+
+    fclose(fd);
 
     // Construct the texture
     Texture *self = (Texture *)calloc(1, sizeof(*self));
@@ -43,7 +46,7 @@ Texture *mapTexture (char *path) {
 
 unsigned char texture_get_pixel(Texture *self, int x, int y) {
   if (x < self->side && y < self->side) {
-    return self->data[self->width * y + x];
+    return self->data[self->side * y + x];
   }
   return 0;
 }

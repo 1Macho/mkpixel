@@ -2,6 +2,7 @@
 #define ENGINE_DRAWING_H
 
 #include "engine.h"
+#include "texture.h"
 
 Colour draw_resolve_colour(Engine *engine, unsigned char id) {
     return engine->palette->data[id];
@@ -27,7 +28,7 @@ void draw_texture_options(Engine *engine, Texture *texture,
     for (unsigned int relative_x = 0; relative_x < s_x; 
         relative_x++) {
         for (unsigned int relative_y = 0; relative_y < s_y;
-            relative_y) {
+            relative_y++) {
             unsigned int in_texture_x = relative_x + o_x;
             unsigned int in_texture_y = relative_y + o_y;
             unsigned int global_x = in_texture_x + x;
