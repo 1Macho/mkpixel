@@ -90,14 +90,6 @@ int engine_init(Engine *self) {
   return 0;
 }
 
-void engine_set_pixel(Engine *self, int x, int y, 
-  unsigned char color_id) {
-  if (x < self->fb->width && y < self->fb->height) {
-    self->fb->data[self->fb->width * y + x] = 
-      self->palette->data[color_id];
-  }
-}
-
 void engine_draw(Engine *self) {
   glClear(GL_COLOR_BUFFER_BIT);
 
