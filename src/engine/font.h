@@ -14,6 +14,10 @@ typedef struct {
   CharFont characters[128];
 } Font;
 
+CharFont charfont_from_ascii (Font *font, unsigned char ascii) {
+  return font->characters[ascii-33];
+}
+
 Font *loadFont (char *path) {
 
   // Get file descriptor.
