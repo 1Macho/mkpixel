@@ -27,7 +27,7 @@ for c_y in range(8):
                 value = int(2**exponent);
                 if px[g_x,g_y] != 0:
                     result += value
-            print(result, result.to_bytes(1,"big"))
+            #print(result, result.to_bytes(1,"big"))
             output.write(result.to_bytes(1,"big"))
 
 base = Image.open(args[-1])
@@ -50,7 +50,7 @@ for c_y in range(8):
                 value = int(2**exponent);
                 if px[g_x,g_y] != 0:
                     result += value
-            print(result, result.to_bytes(1,"big"))
+            #print(result, result.to_bytes(1,"big"))
             output.write(result.to_bytes(1,"big"))
 
 output.close()
