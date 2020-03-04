@@ -5,17 +5,14 @@
 Engine *engine;
 Texture *sample;
 
+
 void draw_test () {
   draw_clear(engine, 0x11);
   draw_texture_options(engine, sample,
-      10, 15, 16,
-      16, 32, 32,
+      10, 15, 0,
+      0, 64, 64,
       0, 0);
-  //for (unsigned int x = 0; x < 256; x++) {
-  //  for (unsigned int y = 0; y < 144; y++) {
-  //    draw_set_pixel(engine, x, y, x+y);
-  //  }
-  //}
+  
 }
 
 int main(int argc, const char *argv[]) {
