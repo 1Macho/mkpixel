@@ -15,11 +15,7 @@ typedef struct {
 } Font;
 
 CharFont charfont_from_ascii (Font *font, unsigned char ascii) {
-  //printf("%u\n",ascii);
-  if (ascii == 32) {
-    return font->characters[127];
-  }
-  return font->characters[ascii-33];
+  return font->characters[ascii-32];
 }
 
 Font *loadFont (char *path) {
