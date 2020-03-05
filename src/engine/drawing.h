@@ -3,6 +3,9 @@
 
 #include "engine.h"
 #include "texture.h"
+#include "font.h"
+#include "util.h"
+#include <string.h>
 
 Colour draw_resolve_colour(Engine *engine, unsigned char id) {
     return engine->palette->data[id];
@@ -43,6 +46,31 @@ void draw_texture_options(Engine *engine, Texture *texture,
             }
             draw_set_pixel(engine, global_x, global_y,
                 id_at_pixel);
+        }
+    }
+}
+
+void draw_text_raw(Engine *engine, 
+    Font *font, unsigned int x, unsigned int y,
+    char *text, unsigned int color_id) {
+    unsigned int text_length = strlen(text);
+    for (unsigned int i = 0; i < text_length; i++) {
+        CharFont characterFont 
+            = charfont_from_ascii(font, text[i]);
+        unsigned char offset = i * 6;
+        for (unsigned int int_y = 0; int_y < 8; int_y++) {
+            unsigned char row_data = characterFont.data[int_y];
+            for (unsigned int int_x = 0; int_x < 8; int_x++) {
+                unsigned char should_set 
+                    = util_bit_value(row_data, 8 - int_x);
+                //printf("%u\n", row_data);
+                if (should_set) {
+                    unsigned char g_x = x + int_x + offset;
+                    unsigned char g_y = y + int_y;
+                    draw_set_pixel(engine, g_x, g_y, 
+                        color_id);
+                }
+            }
         }
     }
 }
