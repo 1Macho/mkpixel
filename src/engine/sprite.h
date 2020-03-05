@@ -13,13 +13,15 @@ typedef struct {
   float period;
   float clock;
   unsigned int state;
+  unsigned int state_count;
   unsigned char alpha_mask;
 } Sprite;
 
 Sprite *newSprite (Texture *sheet, unsigned int hor_states, 
   unsigned int ver_states, unsigned int hor_state_size,
   unsigned int ver_state_size, unsigned char animated,
-  float period, unsigned int state, unsigned char alpha_mask) {
+  float period, unsigned int state, unsigned int state_count, 
+  unsigned char alpha_mask) {
   
   Sprite *self = calloc(1, sizeof(Sprite));
   self->sheet = sheet;
@@ -31,6 +33,7 @@ Sprite *newSprite (Texture *sheet, unsigned int hor_states,
   self->period = period;
   self->clock = period;
   self->state = state;
+  self->state_count = state_count;
   self->alpha_mask = alpha_mask;
   return self;
 }
@@ -47,7 +50,7 @@ void update_sprite (Sprite *self, double dt) {
 void sprite_resolve_clock (Sprite *self) {
   if(self->clock < 0) {
     self->state++;
-    if (self->state >= self->hor_states * self->ver_states) {
+    if (self->state >= self->state_count) {
       self->state = 0;
     }
     float remainder = self->clock;

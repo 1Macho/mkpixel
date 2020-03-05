@@ -26,7 +26,7 @@ int main(int argc, const char *argv[]) {
 
   sample = loadTexture("assets/graphics/anim_test.hg");
   testfont = loadFont("assets/fonts/default.hf");
-  testsprite = newSprite(sample, 2, 2, 32, 32, 1, 1.0f, 0, 0);
+  testsprite = newSprite(sample, 2, 2, 32, 32, 1, 1.0f, 0, 4, 0);
   engine = newEngine(256, 200, 3, "mkpixel");
   engine->on_draw = draw_test;
   engine->on_update = update_test;
