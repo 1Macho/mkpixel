@@ -125,7 +125,7 @@ void engine_tick(Engine *self) {
   self->dt = (self->nowTime - self->lastTime);
   self->lastTime = self->nowTime;
 
-  printf("%f\n", 1/self->dt);
+  //printf("%f\n", 1/self->dt);
 
   if (self->on_update != NULL) {
     self->on_update(self->dt);
