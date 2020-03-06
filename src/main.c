@@ -1,6 +1,7 @@
 #include "engine/engine.h"
 #include "engine/drawing.h"
 #include "engine/font.h"
+#include "engine/audioclip.h"
 #include "engine/sprite.h"
 #include <stdio.h>
 
@@ -8,6 +9,7 @@ Engine *engine;
 Texture *sample;
 Font *testfont;
 Sprite *testsprite;
+AudioClip *testclip;
 
 
 void draw_test () {
@@ -27,6 +29,8 @@ int main(int argc, const char *argv[]) {
   sample = loadTexture("assets/graphics/anim_test.hg");
   testfont = loadFont("assets/fonts/default.hf");
   testsprite = newSprite(sample, 2, 2, 32, 32, 1, 1.0f, 0, 4, 0);
+  testclip = loadAudioClip("assets/audioclips/sample.ogg");
+  printf("%u, %u, %u\n", testclip->channels, testclip->sample_rate, testclip->sample_count);
   engine = newEngine(256, 200, 3, "mkpixel");
   engine->on_draw = draw_test;
   engine->on_update = update_test;

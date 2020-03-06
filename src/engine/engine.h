@@ -17,19 +17,26 @@ typedef struct {
   int screenWidth;
   int screenHeight;
   char *title;
+  double nowTime;
+  double lastTime;
+  double dt;
+
   unsigned int fbID;
   unsigned int fbWidth;
   unsigned int fbHeight;
   unsigned int upscale;
-  double nowTime;
-  double lastTime;
-  double dt;
   Framebuffer *fb;
+
   Palette *palette;
+
+  ALCdevice *audio_device;
+  ALCcontext *audio_context;
+  ALuint audio_sources[256];
 
   void (*on_update)(double dt);
   void (*on_draw)();
-  void (*callback_window_size)(GLFWwindow *window, int width, int height);
+  void (*callback_window_size)(GLFWwindow *window, int width, 
+  int height);
   void (*callback_key)(GLFWwindow *window, int key,
     int scancode, int action, int mods);
   void (*callback_fbt_input)(GLFWwindow *window,
@@ -58,6 +65,7 @@ Engine *newEngine(unsigned int tW, unsigned int tH,
 
 int engine_init(Engine *self) {
 
+  // Initalize glfw and window stuff.
   if (!glfwInit())
     return -1;
 
@@ -82,6 +90,7 @@ int engine_init(Engine *self) {
 
   glfwMakeContextCurrent(self->window);
 
+  // Initialize screen texture.
   glEnable(GL_TEXTURE_2D);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER,
     GL_NEAREST);
@@ -89,6 +98,18 @@ int engine_init(Engine *self) {
     GL_NEAREST);
 
   glGenTextures(1, &self->fbID);
+
+  // Initialize audio stuff.
+  self->audio_device = alcOpenDevice(NULL);
+  if (!self->audio_device) {
+    return -1;
+  }
+  self->audio_context = alcCreateContext(self->audio_device, 
+    NULL);
+  if (!alcMakeContextCurrent(self->audio_context)) {
+    return -1;
+  }
+  alGenSources(256, (ALuint*)&self->audio_sources);
 
   return 0;
 }
