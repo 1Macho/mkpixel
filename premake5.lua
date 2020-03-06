@@ -15,7 +15,7 @@ project "mkpixel"
     targetdir "bin/%{cfg.buildcfg}"
     --targetdir "lib/nxpixel"
     --links { "allegro", "allegro_ttf", "allegro_font", "allegro_color", "allegro_primitives" }
-    links { "GL", "glfw", "m"}
+    links { "GL", "glfw", "m", "openal"}
     --links { "glfw" }
 
     --files { "./src/**.h", "./src/**.c" }

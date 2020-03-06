@@ -5,6 +5,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include <AL/al.h>
+#include <AL/alc.h>
+
 #include "palette.h"
 #include "colour.h"
 #include "framebuffer.h"
