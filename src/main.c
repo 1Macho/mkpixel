@@ -16,9 +16,9 @@ AudioClip *testclip;
 void draw_test () {
   draw_clear(engine, 0);
   draw_text_raw(engine,testfont,3,3,"the quick brown fox jumped over the", 0b11100000); 
-  draw_text_raw(engine,testfont,3,3+8,"lazy dog", 0b00011100); 
-  draw_text_raw(engine,testfont,3,3+8*2,"THE QUICK BROWN FOX JUMPED OVER THE", 0b11100000); 
-  draw_text_raw(engine,testfont,3,3+8*3,"LAZY DOG", 0b00011100); 
+  draw_text_raw(engine,testfont,3,3+8,"some kind of dog or something", 0b00011100); 
+  draw_text_raw(engine,testfont,3,3+8*2,"THE LAZY, YELLOW DOG JUMPED OVER THE", 0b11100000); 
+  draw_text_raw(engine,testfont,3,3+8*3,"SLOW FOX! HAH yeah idk -+-.../\\", 0b00011100); 
   draw_sprite(engine, testsprite, 50, 50);
 }
 

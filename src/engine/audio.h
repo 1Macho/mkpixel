@@ -16,6 +16,35 @@ void audio_check_errors (char *source) {
   }
 }
 
+void audio_pause_source (Engine *engine, int source_id) {
+  alSourcePause(engine->audio_sources[source_id]);
+}
+
+void audio_stop_source (Engine *engine, int source_id) {
+  alSourceStop(engine->audio_sources[source_id]);
+}
+
+unsigned char audio_is_playing (Engine *engine, int source_id) {
+  int source_status = -1;
+  alGetSourcei(engine->audio_sources[source_id], AL_SOURCE_STATE,
+     &source_status);
+  return source_status == AL_PLAYING;
+}
+
+unsigned char audio_is_stopped (Engine *engine, int source_id) {
+  int source_status = -1;
+  alGetSourcei(engine->audio_sources[source_id], AL_SOURCE_STATE,
+     &source_status);
+  return source_status == AL_STOPPED;
+}
+
+unsigned char audio_is_paused (Engine *engine, int source_id) {
+  int source_status = -1;
+  alGetSourcei(engine->audio_sources[source_id], AL_SOURCE_STATE,
+     &source_status);
+  return source_status == AL_PAUSED;
+}
+
 int audio_play_clip (Engine *engine, AudioClip *clip,
   float gain, float pitch, unsigned char loop) {
   int selected_source_id = -1;
