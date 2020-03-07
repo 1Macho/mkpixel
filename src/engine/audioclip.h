@@ -1,6 +1,7 @@
 #ifndef ENGINE_AUDIOCLIP_H
 #define ENGINE_AUDIOCLIP_H
 
+#include "audio.h"
 #include <stdlib.h>
 #include "trd/stb_vorbis.h"
 #include <AL/al.h>
@@ -20,6 +21,7 @@ AudioClip *loadAudioClip (char *path) {
     &self->channels, &self->sample_rate, &self->data);
 
   alGenBuffers(1, &self->al_buffer_id);
+  audio_check_errors("Gen buffer");
   ALenum format = AL_FORMAT_MONO16;
   if (self->channels > 1)
   {
@@ -27,6 +29,7 @@ AudioClip *loadAudioClip (char *path) {
   }
   alBufferData(self->al_buffer_id, format, self->data, 
     self->sample_count, self->sample_rate);
+  audio_check_errors("Buffer data");
   return self;
 }
 

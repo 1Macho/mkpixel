@@ -8,6 +8,7 @@
 #include <AL/al.h>
 #include <AL/alc.h>
 
+#include "audio.h"
 #include "palette.h"
 #include "colour.h"
 #include "framebuffer.h"
@@ -100,16 +101,20 @@ int engine_init(Engine *self) {
   glGenTextures(1, &self->fbID);
 
   // Initialize audio stuff.
+  audio_check_errors("Pre init");
   self->audio_device = alcOpenDevice(NULL);
+  audio_check_errors("Device");
   if (!self->audio_device) {
     return -1;
   }
   self->audio_context = alcCreateContext(self->audio_device, 
     NULL);
+  audio_check_errors("Context");
   if (!alcMakeContextCurrent(self->audio_context)) {
     return -1;
   }
   alGenSources(256, (ALuint*)&self->audio_sources);
+  audio_check_errors("Source gen");
 
   return 0;
 }
