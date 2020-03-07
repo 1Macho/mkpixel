@@ -24,7 +24,8 @@ int audio_play_clip (Engine *engine, AudioClip *clip,
     alGetSourcei(engine->audio_sources[i], AL_SOURCE_STATE,
       &source_status);
     audio_check_errors("Get source state");
-    if (!(source_status == AL_PLAYING)) {
+    if (!(source_status == AL_PLAYING) & 
+        !(source_status == AL_PAUSED)) {
       selected_source_id = i;
       break;
     }
